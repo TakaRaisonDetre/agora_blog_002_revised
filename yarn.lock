@@ -1799,7 +1799,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^17.0.0":
+"@types/react@*", "@types/react@^17.0.14":
   version "17.0.14"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.14.tgz#f0629761ca02945c4e8fea99b8177f4c5c61fb0f"
   integrity sha512-0WwKHUbWuQWOce61UexYuWTGuGY/8JvtUe/dtQ6lR4sZ3UiylHotJeWpf3ArP9+DSGUoLY3wbU59VyMrJps5VQ==
@@ -2205,6 +2205,17 @@ aggregate-error@^3.0.0:
   dependencies:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
+
+"agora-rtc-react@git://github.com/AgoraIO-Community/agora-rtc-react.git#v1.0.1":
+  version "1.0.1"
+  resolved "git://github.com/AgoraIO-Community/agora-rtc-react.git#3fe3c8048e5f6d37d56205e7dd7dd90e8dc49a98"
+  dependencies:
+    agora-rtc-sdk-ng "^4.3.0"
+
+agora-rtc-sdk-ng@^4.3.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/agora-rtc-sdk-ng/-/agora-rtc-sdk-ng-4.5.0.tgz#3d4ea890fe2f18df4d398298424c76ac985c4bd7"
+  integrity sha512-A93m5xkPkqnCx4J768FSj6mcgeaKkDCDUJVi+nnOSANlJ9GN75Bn6SleNwkbEB47PuecBnWqNBwrzuII2fDIkw==
 
 ajv-errors@^1.0.0:
   version "1.0.1"
