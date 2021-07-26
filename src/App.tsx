@@ -16,7 +16,7 @@ const config: ClientConfig = {
   mode: "live", codec: "vp8",
 };
 
-const appId: string = "6bb4e5cc2ba04652b76ba36a4b7b5ce6"; //ENTER APP ID HERE
+const appId: string = ""; //ENTER APP ID HERE
 
 
 const App = () => {
@@ -59,45 +59,7 @@ const VideoCall = (props: {
   useEffect(() => {
     console.log('role is', host)
     // function to initialise the SDK
-         let init = async (channelName: string) => { 
-        
-          client.on("user-published", async (user, mediaType) => {
-           
-            await client.subscribe(user, mediaType);
-            console.log("subscribe success");
-            if (mediaType === "video") {
-              setUsers((prevUsers) => {
-                return [...prevUsers, user];
-              });
-              console.log('user list is ', users)
-            }
-            if (mediaType === "audio") {
-             user.audioTrack?.play();
-             
-            }
-          });
-      
-          client.on("user-unpublished", (user, type) => {
-            console.log("unpublished", user, type);
-            if (type === "audio") {
-              user.audioTrack?.stop();
-            }
-            if (type === "video") {
-              setUsers((prevUsers) => {
-                return prevUsers.filter((User) => User.uid !== user.uid);
-              });
-            }
-          });
-      
-          client.on("user-left", (user) => {
-            console.log("leaving", user);
-            setUsers((prevUsers) => {
-              return prevUsers.filter((User) => User.uid !== user.uid);
-            });
-          });
-
-
-          };
+       
 
     if (ready && tracks) {
       console.log("init ready");
@@ -108,24 +70,57 @@ const VideoCall = (props: {
          response.json().then(async function (data) {
            let token = data.token;
            console.log("Token to acquire", token)
+         
            await client.join(appId, channelName, token, null);
+         
            if (tracks && host===true) {
             await client.setClientRole("host");
             await client.publish([tracks[0], tracks[1]]);
+            setStart(true);
            }
-           else  {
-            if(tracks && host===false){
-              await client.setClientRole("audience");
+           else if(tracks && host===false) {
+           
+              // await client.setClientRole("audience");
+              // await initRemoteUser(channelName);
 
-              init(channelName);
-             }
+              client.on("user-published", async (user, mediaType) => {
+           
+                await client.subscribe(user, mediaType);
+                console.log("subscribe success");
+                if (mediaType === "video") {
+                  setUsers((prevUsers) => {
+                    return [...prevUsers, user];
+                  });
+                  console.log('user list is ::::::::', user.uid)
+                }
+                if (mediaType === "audio") {
+                 user.audioTrack?.play();
+                }
+              });
+          
+              client.on("user-unpublished", (user, type) => {
+                console.log("unpublished", user, type);
+                if (type === "audio") {
+                  user.audioTrack?.stop();
+                }
+                if (type === "video") {
+                  setUsers((prevUsers) => {
+                    return prevUsers.filter((User) => User.uid !== user.uid);
+                  });
+                }
+              });
+              client.on("user-left", (user) => {
+                console.log("leaving", user);
+                setUsers((prevUsers) => {
+                  return prevUsers.filter((User) => User.uid !== user.uid);
+                });
+              });
+              setStart(true);
           }
-           setStart(true);
+          
          })
-  
        })
     }
-
 
   }, [channelName, client, ready, tracks]);
 
@@ -136,6 +131,7 @@ const VideoCall = (props: {
         <Controls tracks={tracks} setStart={setStart} setInCall={setInCall}/>
       )}
       {start && tracks && <Videos users={users} tracks={tracks} host={host}/>}
+
     </div>
   );
 };
@@ -146,14 +142,13 @@ const Videos = (props: {
   host: boolean;
 }) => {
 
-  console.log('users are', props.users)
-
+  console.log('users are :::::::::::::', props.users)
   return (
    
     <div>
     <div id="videos">
-    <AgoraVideoPlayer className='vid' videoTrack={props.tracks[1]}  style={{height: '65%', width: '65%'}} />
-      {props.users.length > 0 &&
+   <AgoraVideoPlayer className='vid' videoTrack={props.tracks[1]}  style={{height: '65%', width: '65%'}} /> 
+      {props.users.length > 0  && props.host===false &&
         props.users.map((user) => {
           if (user.videoTrack) {
             return (
@@ -166,7 +161,6 @@ const Videos = (props: {
   </div>
   );
 };
-
 
 export const Controls = (props: {
   tracks: [IMicrophoneAudioTrack, ICameraVideoTrack];
